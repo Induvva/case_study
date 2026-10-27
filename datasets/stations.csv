@@ -1,0 +1,16 @@
+station_code,station_name,state,zone
+HYB,Hyderabad,Telangana,SCR
+SC,Secunderabad,Telangana,SCR
+KCG,Kacheguda,Telangana,SCR
+WL,Warangal,Telangana,SCR
+BZA,Vijayawada,Andhra Pradesh,SCR
+VSKP,Visakhapatnam,Andhra Pradesh,ECoR
+TPTY,Tirupati,Andhra Pradesh,SCR
+MAS,Chennai,Tamil Nadu,SR
+SBC,Bengaluru,Karnataka,SWR
+CSMT,Mumbai,Maharashtra,CR
+PUNE,Pune,Maharashtra,CR
+NGP,Nagpur,Maharashtra,CR
+BPL,Bhopal,Madhya Pradesh,WCR
+NDLS,Delhi,Delhi,NR
+HWH,Kolkata,West Bengal,ER

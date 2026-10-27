@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>View Trains</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <header>
+    <h1>🚆 Railway Reservation System</h1>
+    <nav>
+      <a href="{{ url_for('index') }}">Home</a>
+      <a href="{{ url_for('view_trains') }}">View Trains</a>
+      <a href="{{ url_for('book_trains') }}">Book Trains</a>
+      <a href="{{ url_for('fare_enquiry') }}">Fare Enquiry</a>
+      {% if session.get('user_email') %}
+      <a href="{{ url_for('pnr_status') }}">PNR Status</a>
+      <a href="{{ url_for('profile') }}">Profile</a>
+      <a href="{{ url_for('logout') }}">Logout</a>
+      {% else %}
+      <a href="{{ url_for('login') }}">Log In</a>
+      <a href="{{ url_for('register') }}">Register</a>
+      {% endif %}
+    </nav>
+  </header>
+
+  <main class="page-shell">
+    <section class="card wide-card">
+      <h2>View All Trains <span class="muted">(<span id="train-count">{{ trains|length }}</span> from the train dataset)</span></h2>
+
+      <div class="filters" id="train-filter">
+        <input type="search" id="filter-text" placeholder="Search by train name, number or station...">
+        <select id="filter-type">
+          <option value="">All types</option>
+          {% for t in train_types %}<option value="{{ t|lower }}">{{ t }}</option>{% endfor %}
+        </select>
+      </div>
+
+      <div class="train-list">
+        {% for train in trains %}
+        <div class="train-card" data-type="{{ train.train_type|lower }}"
+             data-search="{{ (train.train_no ~ ' ' ~ train.name ~ ' ' ~ train.source ~ ' ' ~ train.destination)|lower }}">
+          <div>
+            <p class="train-no">{{ train.train_no }}</p>
+            <h3>{{ train.name }}</h3>
+            <p>{{ train.source }} → {{ train.destination }}</p>
+            <p class="muted">{{ train.train_type }} · {{ train.distance_km }} km · {{ train.runs_on }}</p>
+          </div>
+          <div class="route-meta">
+            <span>Departure: {{ train.departure }}</span>
+            <span>Arrival: {{ train.arrival }}</span>
+            <span>Duration: {{ train.duration }}</span>
+          </div>
+          <div class="fare-list">
+            {% for class_name, fare in train.classes.items() %}
+            <span>{{ class_name }} ₹{{ fare }}</span>
+            {% endfor %}
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </section>
+  </main>
+  <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>
