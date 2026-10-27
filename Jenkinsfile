@@ -30,7 +30,7 @@ pipeline {
         stage('Push Docker Image to Docker Hub') {
             steps {
                 echo "Tagging and pushing image..."
-                bat "docker tag railway-reservation:v1 induvva/railway-reservation:v1"
+                bat "docker tag railway-reservation:v1 induduvva/railway-reservation:v1"
                 bat "docker push induvva/railway-reservation:v1"
             }
         }
