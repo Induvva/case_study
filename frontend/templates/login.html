@@ -17,7 +17,7 @@
       {% if error %}<p class="errors">{{ error }}</p>{% endif %}
       <form method="POST" action="{{ url_for('login') }}">
         <input type="hidden" name="next" value="{{ next_url }}">
-        <label>Email
+        <label>Email-id
           <input type="email" name="email" autocomplete="email" required>
         </label>
         <label>Password
