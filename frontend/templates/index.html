@@ -27,8 +27,36 @@
   </header>
 
   <main class="page-shell">
-    <section class="card">
-      <h2>Find Trains</h2>
+    <section class="home-hero" aria-labelledby="home-title">
+      <div class="hero-copy">
+        <p class="hero-eyebrow">RAILWAY RESERVATIONS, MADE SIMPLE</p>
+        <h2 id="home-title">Make room for <span>the journey.</span></h2>
+        <p>Find your route, choose your train, and get ready for somewhere new.</p>
+        <div class="hero-highlights" aria-label="Travel planning features">
+          <span>Explore routes</span>
+          <span>Compare fares</span>
+          <span>Book with ease</span>
+        </div>
+      </div>
+      <div class="journey-visual" aria-hidden="true">
+        <span class="visual-caption">YOUR NEXT ADVENTURE</span>
+        <div class="journey-track">
+          <i></i><i></i><i></i>
+          <span class="journey-train">🚆</span>
+        </div>
+        <div class="journey-endpoints"><span>Somewhere</span><span>Wonderful</span></div>
+        <span class="journey-code">ROUTE / 001</span>
+      </div>
+    </section>
+
+    <section class="card search-card">
+      <div class="section-heading">
+        <span class="section-icon" aria-hidden="true">↗</span>
+        <div>
+          <p class="section-kicker">PLAN YOUR TRIP</p>
+          <h2>Where would you like to go?</h2>
+        </div>
+      </div>
       <form method="GET" action="{{ url_for('index') }}">
         <div class="row">
           <label>From
@@ -49,18 +77,24 @@
           </label>
         </div>
 
-        <div class="row">
+        <div class="row search-actions">
           <label>Journey Date
             <input type="date" name="journey_date" min="{{ today }}" value="{{ form.get('journey_date', '') }}" required>
           </label>
-          <button type="submit" class="search-btn">Search Trains</button>
+          <button type="submit" class="search-btn"><span aria-hidden="true">⌕</span> Search trains</button>
         </div>
       </form>
     </section>
 
     {% if available_trains %}
     <section class="card wide-card">
-      <h2>Available Trains</h2>
+      <div class="section-heading results-heading">
+        <span class="section-icon" aria-hidden="true">↔</span>
+        <div>
+          <p class="section-kicker">YOUR ROUTE OPTIONS</p>
+          <h2>Available trains</h2>
+        </div>
+      </div>
       <div class="train-list">
         {% for train in available_trains %}
         <div class="train-card">
@@ -88,7 +122,13 @@
     {% endif %}
 
     <section class="card">
-      <h2>Book Your Ticket</h2>
+      <div class="section-heading">
+        <span class="section-icon" aria-hidden="true">＋</span>
+        <div>
+          <p class="section-kicker">READY TO RIDE?</p>
+          <h2>Book your ticket</h2>
+        </div>
+      </div>
 
       {% if errors %}
       <ul class="errors">

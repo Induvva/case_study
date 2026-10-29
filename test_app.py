@@ -1,6 +1,9 @@
+import os
 from datetime import date, timedelta
 
 import pytest
+
+os.environ.pop("DATABASE_URL", None)
 
 from app import app, init_db, validate_booking
 from backend import database

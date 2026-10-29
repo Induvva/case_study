@@ -15,7 +15,7 @@ A railway ticket reservation web application built as a **three-tier application
                                                                          | SQL
                                                                          v
                                               +--------------------------+-----------+
-                                              |  DATABASE (SQLite)                   |
+                                              |  DATABASE (SQLite or PostgreSQL)     |
                                               |  database/schema.sql                 |
                                               |  filled from datasets/*.csv          |
                                               +--------------------------------------+
@@ -31,7 +31,7 @@ A railway ticket reservation web application built as a **three-tier application
 | `backend/api.py` | Backend | REST API under `/api` (JSON) |
 | `backend/services.py` | Backend | Validation, train lookup, PNR generation, login helpers |
 | `backend/database.py` | Backend | Every SQL query and the dataset loader |
-| `database/schema.sql` | Database | Tables: users, stations, trains, train_classes, bookings |
+| `database/schema.sql` | Database | Tables: users, stations, trains, train_classes, bookings (SQLite or PostgreSQL) |
 | `datasets/stations.csv` | Dataset | Station code, name, state, railway zone |
 | `datasets/trains.csv` | Dataset | Train number, name, type, route, timings, distance, fares and seats per class |
 | `app.py` | Entry point | Creates the Flask app (`python app.py`) |
@@ -73,6 +73,22 @@ python app.py
 
 Open http://localhost:5000 (set `FLASK_DEBUG=1` for auto-reload while developing).
 
+### Use local PostgreSQL
+
+Create an empty database in PostgreSQL (for example, `railway_reservation`), then set
+`DATABASE_URL` before starting the app. On Windows PowerShell:
+
+```powershell
+$env:DATABASE_URL = "postgresql://postgres:<your-password>@localhost:5432/railway_reservation"
+python app.py
+```
+
+Replace `postgres` with your PostgreSQL user if needed. Keep the connection URL private;
+do not commit it to source control. On startup, the app creates the tables and loads
+stations and trains from the CSV files. User accounts and bookings are saved in the
+configured database. Existing SQLite accounts and bookings are not copied automatically.
+If `DATABASE_URL` is unset, the app continues to use `railway.db`.
+
 ## Run the tests
 
 ```
@@ -81,10 +97,25 @@ pytest test_app.py
 
 ## Docker
 
-```
+```powershell
+New-Item -ItemType Directory -Force .\data | Out-Null
 docker build -t railway_reserve .
-docker run -d --name railway-web -p 5001:5000 railway_reserve
+docker run -d --name railway-web -p 5001:5000 `
+  --mount "type=bind,source=$((Resolve-Path .\data).Path),target=/data" `
+  railway_reserve
 ```
 
-The database file is created inside the container. Environment variables:
-`SECRET_KEY`, `DATABASE_PATH`, `DATASET_DIR`.
+The container stores SQLite at `/data/railway.db`, which is available on the host as
+`data\railway.db` and survives container restarts and replacements. The `data/` directory
+is ignored by Git so account data is not committed. If `DATABASE_URL` points to PostgreSQL,
+the app uses that database instead. Other environment variables: `SECRET_KEY`,
+`DATABASE_URL`, `DATABASE_PATH`, `DATASET_DIR`.
+
+### Kubernetes SQLite persistence
+
+`deployment.yaml` configures one application replica and mounts a 1 GiB
+`ReadWriteOnce` persistent volume at `/data`; SQLite is stored at
+`/data/railway.db`. Apply the manifest with `kubectl apply -f deployment.yaml`.
+The cluster must have a default StorageClass capable of provisioning this claim.
+Keep one replica when using SQLite; use PostgreSQL via `DATABASE_URL` if the app
+needs multiple replicas.

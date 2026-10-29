@@ -3,7 +3,9 @@ kind: Deployment
 metadata:
   name: railway-reservation-deployment
 spec:
-  replicas: 2
+  replicas: 1
+  strategy:
+    type: Recreate
   selector:
     matchLabels:
       app: railway-reservation
@@ -17,3 +19,24 @@ spec:
           image: induvva/railway-reservation:v1
           ports:
             - containerPort: 5000
+          env:
+            - name: DATABASE_PATH
+              value: /data/railway.db
+          volumeMounts:
+            - name: database-data
+              mountPath: /data
+      volumes:
+        - name: database-data
+          persistentVolumeClaim:
+            claimName: railway-reservation-data
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: railway-reservation-data
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi

@@ -20,6 +20,7 @@ def create_app():
         static_folder=os.path.join(BASE_DIR, "frontend", "static"),
     )
     app.secret_key = os.environ.get("SECRET_KEY") or secrets.token_hex(32)
+    app.config["DATABASE_URL"] = os.environ.get("DATABASE_URL") or None
     app.config["DATABASE"] = os.environ.get(
         "DATABASE_PATH", os.path.join(BASE_DIR, "railway.db")
     )
